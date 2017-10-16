@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PizzaMe</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="permission_location_rationale">PizzaMe needs to use your location to find the closest pizza location</string>
+</resources>
