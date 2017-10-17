@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PizzaMe.iml" filepath="$PROJECT_DIR$/PizzaMe.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cs-pizzame.iml" filepath="$PROJECT_DIR$/cs-pizzame.iml" />
     </modules>
   </component>
 </project>

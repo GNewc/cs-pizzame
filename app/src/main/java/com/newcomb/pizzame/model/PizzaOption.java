@@ -1,12 +1,12 @@
 package com.newcomb.pizzame.model;
 
-import android.databinding.BaseObservable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/**
- * Created by Newcomb on 10/16/2017.
- */
+import java.io.Serializable;
 
-public class PizzaOption extends BaseObservable {
+
+public class PizzaOption implements Serializable {
     /**
      * {"id":"89211502",
      *  "xmlns":"urn:yahoo:lcl",
@@ -42,16 +42,18 @@ public class PizzaOption extends BaseObservable {
     private String _city;
     private String _state;
     private String _phone;
-    private float  _distance;
-    private String _mapUrl;
+    private double _distance;
+    private double _latitude;
+    private double _longitude;
 
     public PizzaOption(String name,
                        String address,
                        String city,
                        String state,
                        String phone,
-                       float distance,
-                       String mapUrl)
+                       double distance,
+                       double latitude,
+                       double longitude)
     {
         _name     = name;
         _address  = address;
@@ -59,7 +61,8 @@ public class PizzaOption extends BaseObservable {
         _state    = state;
         _phone    = phone;
         _distance = distance;
-        _mapUrl   = mapUrl;
+        _latitude = latitude;
+        _longitude = longitude;
     }
 
     public String getName() { return _name; }
@@ -67,6 +70,18 @@ public class PizzaOption extends BaseObservable {
     public String getCity() { return _city; }
     public String getState() { return _state; }
     public String getPhone() { return _phone; }
-    public float getDistance() { return _distance; }
-    public String getMapUrl(){ return _mapUrl; }
+    public double getDistance() { return _distance; }
+    public double getLatitude(){ return _latitude; }
+    public double getLongitude() { return _longitude; }
+
+    public static PizzaOption parseFromJson(JSONObject json) throws JSONException {
+        return new PizzaOption(json.getString("Title"),
+                               json.getString("Address"),
+                               json.getString("City"),
+                               json.getString("State"),
+                               json.getString("Phone"),
+                               Double.parseDouble(json.getString("Distance")),
+                               Double.parseDouble(json.getString("Latitude")),
+                               Double.parseDouble(json.getString("Longitude")));
+    }
 }

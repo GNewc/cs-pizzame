@@ -1,25 +1,46 @@
 package com.newcomb.pizzame.view;
 
+import android.Manifest;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.newcomb.pizzame.R;
+import com.newcomb.pizzame.ViewModel.PizzaDetailViewModel;
+import com.newcomb.pizzame.ViewModel.PizzaOptionSelectedListener;
+import com.newcomb.pizzame.ViewModel.PizzaOptionsViewModel;
+import com.newcomb.pizzame.ViewModel.RequestNearestPizzaTask;
+import com.newcomb.pizzame.model.PizzaOption;
+import com.newcomb.pizzame.utils.PermissionUtils;
 
-/**
- * Created by Newcomb on 10/16/2017.
- */
 
-public class PizzaOptionsFragment extends Fragment {
+public class PizzaOptionsFragment extends Fragment
+                                  implements PizzaOptionSelectedListener
+{
+    private static final String LOG_TAG = PizzaOptionsFragment.class.getSimpleName();
+    private PizzaOptionsViewModel _viewModel;
+    private PizzaDetailViewModel  _selectedModel;
+
+    //private View               _progressView;
+    private PizzaOptionAdapter _adapter;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -29,8 +50,17 @@ public class PizzaOptionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.pizza_options_layout, container, false);
+        // Get the ViewModels
+        _viewModel = ViewModelProviders.of(getActivity()).get(PizzaOptionsViewModel.class);
+        _selectedModel = ViewModelProviders.of(getActivity()).get(PizzaDetailViewModel.class);
 
+        View v = inflater.inflate(R.layout.pizza_options_layout, container, false);
+        //_progressView = v.findViewById(R.id.progress_view);
+        RecyclerView recycler     = v.findViewById(R.id.options_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        _adapter = new PizzaOptionAdapter(this, _viewModel, this);
+        recycler.setAdapter(_adapter);
+        recycler.setLayoutManager(layoutManager);
         setHasOptionsMenu(true);
         return v;
     }
@@ -44,8 +74,16 @@ public class PizzaOptionsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
+            Log.d(LOG_TAG, "Will refresh view");
+            if(ContextCompat.checkSelfPermission(getActivity(),
+                                                 Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                new RequestNearestPizzaTask(_viewModel).execute((AppCompatActivity) getActivity());
+            }
+            else {
+                PermissionUtils.requestPermissionsFromFragment(this, 666);
+            }
             return true;
         }
 
@@ -85,4 +123,45 @@ public class PizzaOptionsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        if(requestCode==666) {
+            new RequestNearestPizzaTask(_viewModel).execute((AppCompatActivity) getActivity());
+        }
+    }
+    //-------------------------------------------------------------------------
+    // PizzaOptionSelectedListener implementation
+    @Override
+    public void optionSelected(PizzaOption option) {
+        _selectedModel.select(option);
+        try {
+            FragmentManager fragMgr = getActivity().getSupportFragmentManager();
+
+            FragmentTransaction transaction = fragMgr.beginTransaction();
+            transaction.replace(R.id.fragment_holder, new OptionDetailFragment(), "detail");
+            transaction.addToBackStack(null);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.commit();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // TODO: Progress handling if this is going to take cycles ...
+//    private void showProgress(final boolean show) {
+//        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//        _progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//        _progressView.bringToFront();
+//        _progressView.animate().setDuration(shortAnimTime).alpha(
+//                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                _progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            }
+//        });
+//    }
 }
