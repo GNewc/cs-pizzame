@@ -65,6 +65,25 @@ public class PizzaOption implements Serializable {
         _longitude = longitude;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof PizzaOption)) {
+            return false;
+        }
+
+        PizzaOption o2 = (PizzaOption) other;
+
+        // Custom equality check here.
+        return _name.equals(o2._name)
+                && _address.equals(o2._address)
+                && _city.equals(o2._city)
+                && _state.equals(o2._state)
+                && _phone.equals(o2._phone)
+                && _distance==o2._distance
+                && _latitude==o2._latitude
+                && _longitude==o2._longitude;
+    }
+
     public String getName() { return _name; }
     public String getAddress() { return _address; }
     public String getCity() { return _city; }

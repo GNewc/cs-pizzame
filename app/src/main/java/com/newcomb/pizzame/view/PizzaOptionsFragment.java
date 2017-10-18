@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,13 +21,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.newcomb.pizzame.R;
-import com.newcomb.pizzame.ViewModel.PizzaDetailViewModel;
-import com.newcomb.pizzame.ViewModel.PizzaOptionSelectedListener;
-import com.newcomb.pizzame.ViewModel.PizzaOptionsViewModel;
-import com.newcomb.pizzame.ViewModel.RequestNearestPizzaTask;
+import com.newcomb.pizzame.viewmodel.PizzaDetailViewModel;
+import com.newcomb.pizzame.viewmodel.PizzaOptionSelectedListener;
+import com.newcomb.pizzame.viewmodel.PizzaOptionsViewModel;
+import com.newcomb.pizzame.viewmodel.RequestNearestPizzaTask;
 import com.newcomb.pizzame.model.PizzaOption;
 import com.newcomb.pizzame.utils.PermissionUtils;
 
@@ -39,7 +38,6 @@ public class PizzaOptionsFragment extends Fragment
     private PizzaDetailViewModel  _selectedModel;
 
     //private View               _progressView;
-    private PizzaOptionAdapter _adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -58,8 +56,8 @@ public class PizzaOptionsFragment extends Fragment
         //_progressView = v.findViewById(R.id.progress_view);
         RecyclerView recycler     = v.findViewById(R.id.options_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        _adapter = new PizzaOptionAdapter(this, _viewModel, this);
-        recycler.setAdapter(_adapter);
+        PizzaOptionAdapter adapter = new PizzaOptionAdapter(this, _viewModel, this);
+        recycler.setAdapter(adapter);
         recycler.setLayoutManager(layoutManager);
         setHasOptionsMenu(true);
         return v;
@@ -126,8 +124,8 @@ public class PizzaOptionsFragment extends Fragment
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         if(requestCode==666) {
             new RequestNearestPizzaTask(_viewModel).execute((AppCompatActivity) getActivity());
         }

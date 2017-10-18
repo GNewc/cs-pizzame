@@ -1,7 +1,6 @@
-package com.newcomb.pizzame.ViewModel;
+package com.newcomb.pizzame.viewmodel;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +13,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.newcomb.pizzame.model.PizzaOption;
 import com.newcomb.pizzame.utils.HttpUtils;
-import com.newcomb.pizzame.utils.PermissionUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,12 +47,11 @@ public class RequestNearestPizzaTask extends AsyncTask<AppCompatActivity, Void, 
                 == PackageManager.PERMISSION_GRANTED) {
                 FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(activity);
                 client.getLastLocation().addOnSuccessListener(location -> {
-                    HttpUtils.requestNearestBusinesses(activity.getApplicationContext(),
-                                                       "pizza",
-                                                       location.getLatitude(),
-                                                       location.getLongitude(),
-                                                       this,
-                                                       this);
+                    new HttpUtils().requestNearestBusinesses(activity.getApplicationContext(),
+                                                                   "pizza",
+                                                                   location,
+                                                                   this,
+                                                                   this);
                 });
             }
         }

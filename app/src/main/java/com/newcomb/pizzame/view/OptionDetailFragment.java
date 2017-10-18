@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.newcomb.pizzame.R;
-import com.newcomb.pizzame.ViewModel.PizzaDetailViewModel;
+import com.newcomb.pizzame.viewmodel.PizzaDetailViewModel;
 import com.newcomb.pizzame.databinding.PizzaDetailsLayoutBinding;
 import com.newcomb.pizzame.model.PizzaOption;
+
+import java.util.Locale;
 
 /**
  * Fragment to display the selected PizzaOption and provide access to call/map
@@ -42,11 +44,12 @@ public class OptionDetailFragment extends Fragment {
                     return;
                 }
             }
-            Toast.makeText(getContext(), "No number associated with this listing", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "No number associated with this listing", Toast.LENGTH_LONG).show();
         });
         view.findViewById(R.id.map_button).setOnClickListener(cv->{
             if(_option!=null) {
-                Uri geoLocation = Uri.parse(String.format("geo:0,0?q=%3.5f,%3.5f(%s)",
+                Uri geoLocation = Uri.parse(String.format(Locale.US,
+                                                          "geo:0,0?q=%3.5f,%3.5f(%s)",
                                                           _option.getLatitude(),
                                                           _option.getLongitude(),
                                                           _option.getName()));
@@ -54,7 +57,7 @@ public class OptionDetailFragment extends Fragment {
                 startActivity(intent);
                 return;
             }
-            Toast.makeText(getContext(), "Issues resolving the location", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "Issues resolving the location", Toast.LENGTH_LONG).show();
         });
         selectedModel.getSelected().observe(this, option -> {
             _option = option;

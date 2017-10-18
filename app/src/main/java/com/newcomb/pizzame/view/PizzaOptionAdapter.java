@@ -8,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.newcomb.pizzame.R;
-import com.newcomb.pizzame.ViewModel.PizzaDetailViewModel;
-import com.newcomb.pizzame.ViewModel.PizzaOptionSelectedListener;
-import com.newcomb.pizzame.ViewModel.PizzaOptionsViewModel;
+import com.newcomb.pizzame.viewmodel.PizzaOptionSelectedListener;
+import com.newcomb.pizzame.viewmodel.PizzaOptionsViewModel;
 import com.newcomb.pizzame.databinding.PizzaOptionItemBinding;
 import com.newcomb.pizzame.model.PizzaOption;
 
@@ -23,16 +22,14 @@ import java.util.List;
 
 public class PizzaOptionAdapter extends RecyclerView.Adapter<PizzaOptionAdapter.BindingHolder> {
 
-    private PizzaOptionsViewModel _viewModel;
     private PizzaOptionSelectedListener _selectionListener;
     private List<PizzaOption> _options = new ArrayList<>();
 
-    public PizzaOptionAdapter(LifecycleOwner lcOwner,
-                              PizzaOptionsViewModel viewModel,
-                              PizzaOptionSelectedListener selectionListener) {
-        _viewModel = viewModel;
+    PizzaOptionAdapter(LifecycleOwner lcOwner,
+                       PizzaOptionsViewModel viewModel,
+                       PizzaOptionSelectedListener selectionListener) {
         _selectionListener = selectionListener;
-        _viewModel.getOptions().observe(lcOwner, options -> {
+        viewModel.getOptions().observe(lcOwner, options -> {
             _options = options;
              notifyDataSetChanged();
         });
@@ -64,9 +61,7 @@ public class PizzaOptionAdapter extends RecyclerView.Adapter<PizzaOptionAdapter.
         BindingHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
-            this.itemView.setOnClickListener((view)-> {
-                _selectionListener.optionSelected(binding.getOption());
-            });
+            this.itemView.setOnClickListener((view)-> _selectionListener.optionSelected(binding.getOption()));
         }
     }
 }

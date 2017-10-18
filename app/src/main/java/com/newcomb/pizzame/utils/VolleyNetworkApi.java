@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Created by Newcomb on 10/16/2017.
+ * Volley implementation of requests to REST api
  */
 
 public class VolleyNetworkApi {

@@ -1,4 +1,4 @@
-package com.newcomb.pizzame.ViewModel;
+package com.newcomb.pizzame.viewmodel;
 
 import com.newcomb.pizzame.model.PizzaOption;
 

@@ -1,4 +1,4 @@
-package com.newcomb.pizzame.ViewModel;
+package com.newcomb.pizzame.viewmodel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
