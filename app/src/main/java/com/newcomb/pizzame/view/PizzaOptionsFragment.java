@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.newcomb.pizzame.R;
 import com.newcomb.pizzame.viewmodel.PizzaDetailViewModel;
 import com.newcomb.pizzame.viewmodel.PizzaOptionSelectedListener;
@@ -74,10 +76,15 @@ public class PizzaOptionsFragment extends Fragment
 
         if (id == R.id.action_refresh) {
             Log.d(LOG_TAG, "Will refresh view");
+            // Need to check for permission, or ask for it.
             if(ContextCompat.checkSelfPermission(getActivity(),
                                                  Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                new RequestNearestPizzaTask(_viewModel).execute((AppCompatActivity) getActivity());
+                FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getActivity());
+                client.getLastLocation().addOnSuccessListener(location -> {
+                    // This comes back into the UIThread, so launch an AsyncTask for the Http call.
+                    new RequestNearestPizzaTask(_viewModel).execute(getActivity(), location);
+                });
             }
             else {
                 PermissionUtils.requestPermissionsFromFragment(this, 666);

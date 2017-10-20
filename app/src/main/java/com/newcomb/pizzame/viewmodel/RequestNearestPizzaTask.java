@@ -1,16 +1,12 @@
 package com.newcomb.pizzame.viewmodel;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Context;
+import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.newcomb.pizzame.model.PizzaOption;
 import com.newcomb.pizzame.utils.HttpUtils;
 
@@ -26,7 +22,7 @@ import java.util.List;
  *  an update to the nearest pizza joints. This will update the ViewModel
  *  for the list of possible places.
  */
-public class RequestNearestPizzaTask extends AsyncTask<AppCompatActivity, Void, Boolean>
+public class RequestNearestPizzaTask extends AsyncTask<Object, Void, Boolean>
                                      implements Response.Listener<JSONObject>,
                                                 Response.ErrorListener
 {
@@ -38,22 +34,23 @@ public class RequestNearestPizzaTask extends AsyncTask<AppCompatActivity, Void, 
     }
 
     @Override
-    protected Boolean doInBackground(AppCompatActivity... activities) {
-        PizzaOptionsViewModel pof = _wrViewModel.get();
-        AppCompatActivity activity = activities[0];
-        if (pof != null && activity != null) {
-            if(ContextCompat.checkSelfPermission(activity,
-                                                 Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-                FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(activity);
-                client.getLastLocation().addOnSuccessListener(location -> {
-                    new HttpUtils().requestNearestBusinesses(activity.getApplicationContext(),
-                                                                   "pizza",
-                                                                   location,
-                                                                   this,
-                                                                   this);
-                });
+    protected Boolean doInBackground(Object... params) {
+        if(params.length<2)
+            return false;
+        try {
+            Context context = (Context) params[0];
+            Location location = (Location) params[1];
+            if (context != null) {
+                HttpUtils.requestNearestBusinesses(context,
+                        "pizza",
+                        location,
+                        this,
+                        this);
             }
+        }
+        catch(Exception ex) {
+            Log.e(LOG_TAG, "Deal with bad things", ex);
+            return false;
         }
         return true;
     }
