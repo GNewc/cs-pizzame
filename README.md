@@ -1,17 +1,16 @@
 NOTES:
 ----------
-Though the challenge is "functionally" complete, it is not product quality of course. There are places where I have completely skipped putting literal strings into the Resources instead, or perhaps not optimized some facet of the design.
+This Android application demonstrates several vital aspects commonly required for basic functionality:
 
-However, I believe that the gist of the challenge is there, it touches on some of the following facets of Android development that I believe you were looking for:
-1. AsyncTask was used to demonstrate a reasonable application of that feature
-2. I utilized Volley for the RESTful requests... it's the library I've used in my other applications. Though I have experience with other libraries.
-3. Location services access ... and understanding all the asynchronous behavior and Permission foo that goes with using it.
-4. Intents, and launching other Activities to accomplish goals
-5. MVVM ... and how to keep a good separation of business logic and UI
-6. Testing, mocking, espresso, ....
+1. It is written using the MVVM model, leveraging the <a href= "https://developer.android.com/topic/libraries/architecture/index.html">Architectural Components</a> framework provided for Android.
+2. AsyncTask is used to demonstrate a reasonable application of that feature (i.e. making RESTful request).
+3. Volley for the RESTful requests.
+4. Location services access ... and the asynchronous behavior and Permission foo that goes with using it.
+5. Intents, and launching other Activities to accomplish goals
+6. <a href="https://developer.android.com/topic/libraries/data-binding/index.html">DataBinding</a> 
+7. RecyclerView
+8. Testing, mocking, espresso, ....
 
-I look forward to your response.
--Gary
 
 RUBRIC:
 -----------
@@ -33,9 +32,4 @@ Rest query : api<https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%2
  
 (Note: you will need to modify the API to use your device's geo location instead of a hardcoded zip code ref: 
  
-Android Technology to be used
  
-*   RecyclerView
-*   Should be developed in MVVM style and include automated unit tests
- 
-Additional technology may be used as the developer sees fit, however be prepared to discuss each items inclusion.
